@@ -1,11 +1,12 @@
 package com.company;
+import java.util.List;
 
-public class GameBoard {
+public class GameBoard extends Game{
     private Player UserCharacter;
-    private int GameLevel;
-    private boolean GameFinish;
+    private List<Enemy> Enemys;
+    private List<Tile> Tiles;
 
-    public GameBoard(Player player, int gameLevel,false){
+    public GameBoard(Player player){
 
     }
 

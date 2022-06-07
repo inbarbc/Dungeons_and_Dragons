@@ -2,9 +2,10 @@ package com.company;
 
 public class Mage extends Player{
 
-    private int ManaCost;
-    private int CurrentMana;
-    private int ManaPool;
+    private Mana Mana;
+    // private int ManaCost;
+    // private int CurrentMana;
+    // private int ManaPool;
     private int SpellPower;
     private int HitCount;
     private int AbilityRange;
