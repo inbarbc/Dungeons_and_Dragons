@@ -1,6 +1,6 @@
 package com.company;
 
-public class Health {
+public class Health extends Resorces {
     private int healthPool;
     private int currentHealth;
 
