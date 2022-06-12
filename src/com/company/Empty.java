@@ -1,7 +1,16 @@
 package com.company;
 
 public class Empty extends Tile {
-    public static char ToString(){
-        return '.';
+
+    final char emptyChar = '.';
+
+
+    public char ToString(){
+        return emptyChar;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }
