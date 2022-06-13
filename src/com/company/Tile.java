@@ -1,27 +1,42 @@
 package com.company;
 
-public abstract class  Tile implements Comparable {
+public abstract class  Tile implements Comparable<Tile> {
     //fields
-    private char tile;
-    private Position position;
+    protected char tile;
+    protected Position position;
 
-    public char ToString(){
-        return '.';
+    protected Tile(char tile){
+        this.tile = tile;
+    }
+
+    protected void initialize(Position position){
+        this.position = position;
+    }
+
+    public char getTile(){
+        return tile;
+    }
+
+    public Position getPosition(){
+        return position;
+    }
+    public void setPosition(Position position){
+        this.position = position;
+    }
+
+    public abstract void accept(Unit unit);
+
+    @Override
+    public String toString(){
+        return String.valueOf(tile);
     }
     public void remove(){
         this.tile = Empty.ToString();
     }
 
     //compares tile based on their positions lexigrahicly
-    public int CompareTo(Tile Other){
-        if(this.position.getX() > Other.position.getX())
-            return 1;
-        if(this.position.getX() < Other.position.getX())
-            return -1;
-        if(position.getY() > Other.position.getY())
-            return 1;
-        if(position.getY() < Other.position.getY())
-            return -1;
-        return 0;
+    @Override
+    public int compareTo(Tile Other){
+        return getPosition().compareTo(Other.getPosition());
     }
 }

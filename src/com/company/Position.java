@@ -26,4 +26,16 @@ public class Position {
     public void setY(int y) {
         this.y = y;
     }
+
+    public int compareTo(Position position) {
+        if(getX() > position.getX())
+            return 1;
+        if(getX() < position.getX())
+            return -1;
+        if(getY() > position.getY())
+            return 1;
+        if(getY() < position.getY())
+            return -1;
+        return 0;
+    }
 }
