@@ -1,11 +1,15 @@
 package com.company;
 
+import java.util.Objects;
+
 public class Position {
     //fields
-    private int x;
-    private int y;
+    public int x = 0;
+    public int y = 0;
 
-    //constractor
+    //constructor
+    public Position(){    }
+
     public Position(int x,int y){
         this.x = x;
         this.y = y;
@@ -37,5 +41,28 @@ public class Position {
         if(getY() < position.getY())
             return -1;
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coordinate that = (Coordinate) o;
+        return x == that.x && y == that.y;
+    }
+
+    public Position copy() {
+        return new Position(this.x, this.y);
+    }
+
+    @Override
+    public String toString() {
+        return "x:"+x+", y:"+y;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

@@ -1,16 +1,15 @@
 package com.company;
 
-public class Wall extends Tile{
+public class Wall{
+    public class Wall {
+        public Coordinate position;
+        public char tile='#';
+        public Wall(Coordinate pos){
+            this.position = pos;
+        }
 
-    final char wallChar = '#';
-
-
-    public char ToString(){
-        return wallChar;
+        @Override
+        public String toString() {
+            return this.tile+"";
+        }
     }
-
-    @Override
-    public int compareTo(Object o) {
-        return 0;
-    }
-}

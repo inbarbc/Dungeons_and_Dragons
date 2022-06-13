@@ -1,15 +1,22 @@
 package com.company;
 
 public class Health extends Resorces {
-    private int healthPool;
-    private int currentHealth;
+    private int healthAmount = 0;
+    private int healthPool = 0;
 
-    public Health(int healthPool,int currentHealth){
+    public Health() {    }
+
+    public Health(int healthAmount, int healthPool) {
+        this.healthAmount = healthAmount;
         this.healthPool = healthPool;
-        this.currentHealth = currentHealth;
     }
 
-    public String ToString(){
-        return "Health Pool = " + healthPool + " | " + " Current Health = " + currentHealth;
+    public boolean isDead() {
+        return healthAmount <= 0;
+    }
+
+    @Override
+    public String toString() {
+        return "health amount:" + healthAmount + ", health pool:" + healthPool;
     }
 }
