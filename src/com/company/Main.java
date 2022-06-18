@@ -1,9 +1,11 @@
 package com.company;
 
+import Game.GameManager;
+
 public class Main {
 
     public static void main(String[] args) {
-        Game gameManager = new Game();
-        gameManager.start(args[0]);
+        GameManager gameManager = new GameManager();
+        gameManager.Start(args[0]);
     }
 }
