@@ -15,8 +15,7 @@ import java.util.*;
 public class GameManager {
 
     private static MessageCallback messageCallback;
-    Board board;
-    List<Enemy> enemies;
+    Board board = new Board();
     private int tickCount=0;
     private  List<File> levelsFiles=new ArrayList<File>();
     public List<Unit> listTurn=new ArrayList<Unit>();
