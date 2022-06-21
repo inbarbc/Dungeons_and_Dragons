@@ -30,8 +30,8 @@ public class DatabaseUnits {
     }
 
     public static void BuildDictionary() {
-        BuildUnit("/addons/dbPlayer", playerPool);
-        BuildUnit("/addons/dbEnemy", enemyPool);
+        BuildUnit("/addons/dbPlayer", playerPool); // players list
+        BuildUnit("/addons/dbEnemy", enemyPool); // enemies list
     }
 
     public static String GetFileJar(String address) {
@@ -42,8 +42,8 @@ public class DatabaseUnits {
         return fileText;
     }
 
+    // transfer the table to presentation view
     private static void BuildUnit(String address, Map<String, Unit> map) {
-
         String txtToSplit = GetFileJar(address);
         ArrayList<String> enemyUnit = new ArrayList<String>(Arrays.asList(txtToSplit.split("\n")));
         for (String unitStr : enemyUnit) {

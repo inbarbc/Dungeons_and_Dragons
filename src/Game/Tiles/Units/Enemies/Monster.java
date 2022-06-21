@@ -22,7 +22,7 @@ public class Monster extends Enemy {
     public void Turn(int turnCount) {
         super.Turn(turnCount);
         List<Player> closePlayer = new ArrayList<>();
-        closePlayer = TargetHandler.CandidateTarget(this, visionRange);
+        closePlayer = TargetHandler.CandidateTarget(this, this.GetPosition(), visionRange);
         if (closePlayer.size() > 0) {
             int dx = this.GetPosition().x - closePlayer.get(0).GetPosition().x;
             int dy = this.GetPosition().y - closePlayer.get(0).GetPosition().y;
