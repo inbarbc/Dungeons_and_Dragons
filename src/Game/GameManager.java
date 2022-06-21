@@ -21,6 +21,8 @@ public class GameManager {
     private  List<File> levelsFiles=new ArrayList<File>();
     public List<Unit> listTurn=new ArrayList<Unit>();
 
+
+    // contracture
     public GameManager(MessageCallback m){
         this.messageCallback = m;
         DatabaseUnits.BuildDictionary();

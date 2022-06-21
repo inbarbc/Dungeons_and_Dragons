@@ -34,7 +34,7 @@ public class Trap extends Enemy {
             tickCount=0;
         else
             tickCount+=1;
-        List<Player> closePlayer= TargetHandler.CandidateTarget(this,VISION_RANGE);
+        List<Player> closePlayer= TargetHandler.CandidateTarget(this, GetPosition(), VISION_RANGE);
         if(closePlayer.size()>0)
             this.Attack(closePlayer.get(0));
     }

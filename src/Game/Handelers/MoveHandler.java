@@ -14,6 +14,7 @@ public class MoveHandler {
     public static Board gameBoard;
     private static MessageCallback messageCallback;
 
+    // receive a move and a player and commit the movement
     public static void Move(InputProvider input, Player player){
         Position moveTo = joyStick(input, player.GetPosition());
         Enemy target = TargetCondidate(moveTo, player);
@@ -24,9 +25,9 @@ public class MoveHandler {
             Combat(player, target);
             player.Attack(target);
         }
-
     }
 
+    // receive a move and an enemy and commit the movement
     public static void Move(InputProvider input, Enemy enemy){
         Position moveTo = joyStick(input, enemy.GetPosition());
         if(IsOnEnemy(moveTo))
@@ -42,12 +43,14 @@ public class MoveHandler {
 
     }
 
+    // commit a combat between two units
     public static void Combat(Unit unit1, Unit unit2){
         messageCallback.Send(String.format("%s engaged in combat with %d.", unit1.GetName(), unit2.GetName()));
         messageCallback.Send(unit1.Describe());
         messageCallback.Send(unit2.Describe());
     }
 
+    // update the position of the unit and committed move
     private static Position joyStick(InputProvider input, Position pos) {
         Position newPos = pos.Copy();
         switch (input) {
@@ -60,11 +63,14 @@ public class MoveHandler {
             newPos = pos.Copy();
         return newPos;
     }
+
+    // check if the move is valid in the game
     private static boolean IsValidMove(Position newPos){
         return (newPos.x>= 0 && newPos.x< gameBoard.width && newPos.y>= 0 && newPos.y< gameBoard.height &&
                 !gameBoard.walls.containsKey(newPos));
     }
 
+    // check if an enemy move on another enemy
     private static boolean IsOnEnemy(Position newPos){
         boolean isSameCor = false;
         int i = 0;
@@ -77,11 +83,13 @@ public class MoveHandler {
         return isSameCor;
     }
 
+    // return the first enemy if exist that close to the player
     private static Enemy TargetCondidate(Position newPos, Player player){
         List<Enemy> targets = TargetHandler.CandidateTarget(player,newPos, 0);
         return targets.size() == 0 ? null: targets.get(0);
     }
 
+    // return the flayer if exist that close to the enemy
     private static Player TargetCondidate(Position newPos, Enemy enemy){
         List<Player> targets = TargetHandler.CandidateTarget(enemy,newPos, 0);
         return targets.size() == 0 ? null: targets.get(0);

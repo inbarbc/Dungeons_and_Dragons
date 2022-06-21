@@ -41,6 +41,7 @@ public class Position {
         return 0;
     }
 
+    // return the range between two objects
     public boolean IsInRange(Position c2, int range) {
         return range >= this.Distance(c2);
     }

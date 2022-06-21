@@ -48,7 +48,7 @@ public class Boss extends Enemy implements HeroicUnit {
     public void Turn(int turnCount) {
         super.Turn(turnCount);
         List<Player> closePlayer=new ArrayList<>();
-        closePlayer= TargetHandler.CandidateTarget(this,visionRange);
+        closePlayer= TargetHandler.CandidateTarget(this, GetPosition(), visionRange);
         if(closePlayer.size()>0) {
             if (this.combatTicks == abilityFrequency) {
                 this.combatTicks = 0;
