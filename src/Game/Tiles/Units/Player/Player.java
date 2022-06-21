@@ -1,9 +1,7 @@
 package Game.Tiles.Units.Player;
 
 import Game.Callbacks.MessageCallback;
-import Game.Callbacks.PlayerDeathCallback;
 import Game.Handelers.MoveHandler;
-import Game.Tiles.Units.Actions.Action;
 import Game.Tiles.Units.HeroicUnit;
 import Game.Tiles.Units.Unit;
 import Game.Handelers.InputHandler;
@@ -24,7 +22,7 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
     protected int level;
     protected int experience;
 
-    protected PlayerDeathCallback deathCallback;
+    protected MessageCallback messageCallback;
     protected InputProvider inputProvider;
 
     public Player(){}
@@ -39,9 +37,9 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
         this.experience = 0;
     }
 
-    public Player Initialize(Position position, MessageCallback messageCallback, PlayerDeathCallback deathCallback, InputProvider inputPruvider) {
+    public Player Initialize(Position position, MessageCallback messageCallback, InputProvider inputPruvider) {
         super.Initialize(position, messageCallback);
-        this.deathCallback = deathCallback;
+        this.messageCallback = messageCallback;
         this.inputProvider = inputPruvider;
         return this;
     }
@@ -76,7 +74,6 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
 
     public void OnDeath() {
         messageCallback.Send("You lost.");
-        deathCallback.Call();
     }
 
     protected void AddExperience(int experienceGained) {

@@ -1,6 +1,6 @@
 package Game.Tiles.Units.Enemies;
 
-import Game.Callbacks.EnemyDeathCallback;
+import Game.Callbacks.MessageCallback;
 import Game.Handelers.InputHandler;
 import Game.Handelers.MoveHandler;
 import Game.Tiles.Units.HeroicUnit;
@@ -20,7 +20,7 @@ public abstract class Enemy extends Unit implements HeroicUnit, InputQuery {
     protected static final int DEFENSE_BONUS = 1;
     protected static final int HEALTH_BONUS = 10;
 
-    private EnemyDeathCallback enemyDeathCallback;
+    public MessageCallback messageCallback;
 
     public Enemy(){}
     public Enemy(String name, char tile, int hp, int ap, int dp, Position pos) {
@@ -61,7 +61,7 @@ public abstract class Enemy extends Unit implements HeroicUnit, InputQuery {
     }
 
 
-    public void SetDeathCallback(EnemyDeathCallback enemyDeathCallback) {
-        this.enemyDeathCallback = enemyDeathCallback;
+    public void SetMessageCallback(MessageCallback messageCallback) {
+        this.messageCallback = messageCallback;
     }
 }
