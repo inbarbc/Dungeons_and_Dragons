@@ -14,19 +14,19 @@ import java.util.Scanner;
 
 public class Board {
 
-    private static Player player;
+    private Player player;
     public int height;
     public int width;
     public List<Enemy> enemies= new ArrayList<Enemy>();
     public HashMap<Position, Wall> walls = new HashMap<Position, Wall>();
     private String[][]board;
 
-    public static Player GetPlayer() {
+    public Player GetPlayer() {
         return player;
     }
 
-    public static void SetPlayer(Player player) {
-        Board.player = player;
+    public void SetPlayer(Player player) {
+        this.player = player;
     }
 
     public void BuildBoard(File mapFile, Player player){

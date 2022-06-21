@@ -14,14 +14,15 @@ import java.util.*;
 
 public class GameManager {
 
-    private static MessageCallback messageCallback;
+    private MessageCallback messageCallback;
     Board board;
     List<Enemy> enemies;
     private int tickCount=0;
     private  List<File> levelsFiles=new ArrayList<File>();
     public List<Unit> listTurn=new ArrayList<Unit>();
 
-    public GameManager(){
+    public GameManager(MessageCallback m){
+        this.messageCallback = m;
         DatabaseUnits.BuildDictionary();
         TargetHandler.gameBoard=this.board;
         MoveHandler.gameBoard=this.board;
@@ -145,7 +146,7 @@ public class GameManager {
     private void GetPlayerMenu(){
         PrintMenu();
         char choose= InputHandler.InputMenu();
-        Board.SetPlayer((Player) DatabaseUnits.playerPool.get(choose+"").Copy());
+        board.SetPlayer((Player) DatabaseUnits.playerPool.get(choose+"").Copy());
         PrintChoosenPlayer();
 
     }
@@ -156,14 +157,14 @@ public class GameManager {
             messageCallback.Send(board.GetPlayer().Describe());
     }
 
-    public static void PrintMenu(){
+    public void PrintMenu(){
         messageCallback.Send("Select player:");
         for(Map.Entry<String, Unit> player : DatabaseUnits.playerPool.entrySet())
             messageCallback.Send(player.getValue().ToString()+"."+player.getValue().Describe());
     }
 
-    public static void PrintChoosenPlayer(){
-        Player player = Board.GetPlayer();
+    public void PrintChoosenPlayer(){
+        Player player = board.GetPlayer();
         messageCallback.Send(String.format("You have selected: %s", player.GetName()));
     }
 }
