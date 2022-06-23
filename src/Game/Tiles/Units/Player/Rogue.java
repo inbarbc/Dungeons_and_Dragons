@@ -19,45 +19,48 @@ public class Rogue extends Player {
         currentEnergy=MAX_ENERGY;
     }
 
+    // the Rogue cast his ability
     @Override
-    public void CastAbility(){
-        List<Enemy> potenTarget= TargetHandler.CandidateTarget(this,this.GetPosition(),this.ABILITY_RANGE);
-        messageCallback.Send(String.format("%s cast %s.",this.GetName(), this.ABILITY_NAME));
+    public void castAbility(){
+        List<Enemy> potenTarget= TargetHandler.candidateTarget(this,this.getPosition(),this.ABILITY_RANGE);
+        messageCallback.send(String.format("%s cast %s.",this.getName(), this.ABILITY_NAME));
         for(Enemy target:potenTarget){
-            this.castAbility(target,this.GetAttackPoints());
+            this.castAbility(target,this.getAttackPoints());
         }
         this.currentEnergy-=cost;
     }
 
-    public void TryCastAbility(){
-        boolean cast=super.TryCastAbility(currentEnergy,cost);
+    // the Rogue try to cast his ability
+    public void tryCastAbility(){
+        boolean cast=super.tryCastAbility(currentEnergy,cost);
         if(!cast)
-            messageCallback.Send(String.format("%s tried to cast %s , but there was not enough energy: %s/%t.",this.GetName(), this.ABILITY_NAME, currentEnergy, cost));
+            messageCallback.send(String.format("%s tried to cast %s , but there was not enough energy: %s/%t.",this.getName(), this.ABILITY_NAME, currentEnergy, cost));
     }
+
+    // level up for this Rogue
     @Override
-    public void LevelUp(){
-        super.LevelUp();
+    public void levelUp(){
+        super.levelUp();
         this.currentEnergy=MAX_ENERGY;
-        this.attack = (this.GetAttackPoints()+this.GetLevel()*3);
+        this.attack = (this.getAttackPoints()+this.getLevel()*3);
     }
+
+    // this Rogue makes a turn
     @Override
-    public void Turn(int turnCount){
-        super.Turn(turnCount);
+    public void turn(int turnCount){
+        super.turn(turnCount);
         currentEnergy=Math.min(MAX_ENERGY,currentEnergy+10);
-
-    }
-    public String Describe() {
-        return super.Describe()+"\t\tEnergy: "+currentEnergy+"/"+MAX_ENERGY;
     }
 
-    @Override
-    public void ProcessStep() {
-
+    // the Rogue describe
+    public String describe() {
+        return super.describe()+"\t\tEnergy: "+currentEnergy+"/"+MAX_ENERGY;
     }
 
-    public Rogue Copy()
+    // a copy of the Rogue
+    public Rogue copy()
     {
-        return new Rogue(this.GetName(), playerTile, this.GetHealth().GetAmount(),this.GetAttackPoints(),this.GetDefence(),this.cost);
+        return new Rogue(this.getName(), playerTile, this.getHealth().getAmount(),this.getAttackPoints(),this.getDefence(),this.cost);
     }
 
     @Override

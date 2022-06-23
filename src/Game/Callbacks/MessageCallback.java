@@ -1,5 +1,5 @@
 package Game.Callbacks;
 
 public interface MessageCallback{
-    void Send(String message);
+    void send(String message);
 }

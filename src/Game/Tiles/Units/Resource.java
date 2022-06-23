@@ -11,32 +11,37 @@ public class Resource {
         this.Amount = amount;
     }
 
-    public int GetAmount() {
+    // return the amount of the player
+    public int getAmount() {
         return Amount;
     }
 
-    public void SetAmount(int amount) {
+    // set the amount of the player
+    public void setAmount(int amount) {
         Amount = amount;
     }
 
-    public void SetPool(int pool) {
+    // set the pool of the player
+    public void setPool(int pool) {
         Pool = pool;
     }
 
-    public int GetPool() {
+    // return the pool of the player
+    public int getPool() {
         return Pool;
     }
 
-    public void ReduceAmount(int damageDone) {
+    // reduce the amount points by the damage that done
+    public void reduceAmount(int damageDone) {
     }
 
-    public void AddCapacity(int healthGained) {
+    // add the health gained to this player health
+    public void addCapacity(int healthGained) {
+        setAmount(healthGained);
     }
 
-    public void Restore() {
-    }
-
-    public boolean IsDead() {
-        return GetAmount() <= 0;
+    // check if the player is dead
+    public boolean isDead() {
+        return getAmount() <= 0;
     }
 }

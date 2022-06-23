@@ -5,12 +5,8 @@ import Game.GameManager;
 import Game.Tiles.Units.Enemies.Enemy;
 import Game.Tiles.Units.Player.Player;
 import Game.Utils.Position;
-import Game.Utils.Movement;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.function.Function;
 
 public abstract class Unit extends Tile {
 
@@ -24,32 +20,35 @@ public abstract class Unit extends Tile {
     private Position position = new Position();
     public static GameManager gameManager;
 
-    public Unit(){}
-
-    public String GetName(){
+    // return the unit name
+    public String getName() {
         return name;
     }
 
-    public Resource GetHealth(){
+    // return the health of the unit
+    public Resource getHealth() {
         return health;
     }
 
-    public int GetAttack(){
+    // return the attack points of the unit
+    public int getAttack() {
         return attack;
     }
 
-    public int GetDefence(){
+    // return the defence points of the unit
+    public int getDefence() {
         return defense;
     }
 
-    public Unit(char tile, String name, int healthCapacity, int attack, int defense){
+    public Unit(String name, char tile, int healthCapacity, int attack, int defense) {
         super(tile);
         this.name = name;
         this.health = new Health(healthCapacity, healthCapacity);
         this.attack = attack;
         this.defense = defense;
     }
-    public Unit(char tile, String name, int healthCapacity, int attack, int defense, Position position){
+
+    public Unit(char tile, String name, int healthCapacity, int attack, int defense, Position position) {
         super(tile);
         this.name = name;
         this.health = new Health(healthCapacity, healthCapacity);
@@ -58,102 +57,95 @@ public abstract class Unit extends Tile {
         this.position = position;
     }
 
-    public Unit(String name, char tile, int hp, int ap, int dp){
-        this( tile, name,  hp,  ap,  dp, new Position());
-    }
-
-    protected void Initialize(Position position, MessageCallback messageCallback){
-        super.Initialize(position);
+    // initialize the position of this Tile
+    protected void initialize(Position position, MessageCallback messageCallback) {
+        super.initialize(position);
         this.messageCallback = messageCallback;
     }
 
-    protected int Attack(){
-        int result = rnd.nextInt(attack);
-        messageCallback.Send(String.format("%s rooled %d attack points.", GetName(), result));
-        return result;
+    // make a combat between this Unit and Unit defender
+    public void attack(Unit defender) {
+        this.attack(defender, this.getAttackPoints());
     }
 
-    public void Attack(Unit defender){
-        this.Attack(defender,this.GetAttackPoints());
-    }
-
-    public int GetAttackPoints() {
+    // return the attack points of this Unit
+    public int getAttackPoints() {
         return attack;
     }
 
-    public void Attack(Unit defender,int ap){
-        int result = rnd.nextInt(ap + 1);
-        messageCallback.Send(String.format("%s rooled %d attack points.", GetName(), result));
-        Combat(defender);
+    // make a combat between this Unit and Unit defender
+    public void attack(Unit defender, int attackPoints) {
+        int result = rnd.nextInt(attackPoints + 1);
+        messageCallback.send(String.format("%s rooled %d attack points.", getName(), result));
+        combat(defender);
     }
 
-    public abstract void OnDeath();
+    // abstract method
+    public abstract void onDeath();
 
-    public void Visit(Empty e){
-        SwapPosition(e);
+    // if the unit is an empty - it is swap the positions
+    public void visit(Empty e) {
+        swapPosition(e);
     }
 
-    public void Visit(Wall w){
+    // if the unit is a wall - it is not moving
+    public void visit(Wall w) {
     }
 
-    public abstract void Visit(Player p);
+    // abstract method - if the Unit is a player
+    public abstract void visit(Player p);
 
-    public abstract void Visit(Enemy e);
+    // abstract method - if the Unit is an enemy
+    public abstract void visit(Enemy e);
 
-    protected void Combat(Unit u){
-        messageCallback.Send(String.format("%s engaged in combat with %s.\n%s\n%s", GetName(), u.GetName(), Describe(), u.Describe()));
+    // print the combat between this Unit and Unit u
+    protected void combat(Unit u) {
+        messageCallback.send(String.format("%s engaged in combat with %s.\n%s\n%s", getName(), u.getName(), describe(), u.describe()));
         int damageDone = Math.max(attack - u.defense, 0);
-        u.health.ReduceAmount(damageDone);
-        messageCallback.Send(String.format("%s dealt %d damage to %s.", GetName(), damageDone, u.GetName()));
+        u.health.reduceAmount(damageDone);
+        messageCallback.send(String.format("%s dealt %d damage to %s.", getName(), damageDone, u.getName()));
     }
 
-    public int[] Sefence(int ar){
-        int [] combatInfo = new int[2];
-        combatInfo[0] = rnd.nextInt(GetDefence());
-        combatInfo[1] = Math.max(ar - combatInfo[0], 0);
-        this.GetHealth().SetAmount((GetHealth().GetAmount() - combatInfo[1]));
-        return combatInfo;
+    // return a string that describe the unit
+    public String describe() {
+        return String.format("%s\t\tHeath: %s\t\tAttack: %d\t\tDefense: %d", getName(), getHealth().toString(), getAttack(), getDefence());
     }
 
-    public void Interact(Tile tile){
-        tile.Accept(this);
+    // return if the unit is dead
+    public boolean isDead() {
+        return health.isDead();
     }
 
-    public String Describe(){
-        return String.format("%s\t\tHeath: %s\t\tAttack: %d\t\tDefense: %d", GetName(), GetHealth(), GetAttack(), GetDefence());
+    // swap the position between this Unit and an empty Tile
+    protected void swapPosition(Empty t) {
+        Position p = t.getPosition();
+        t.setPosition(this.getPosition());
+        this.setPosition(p);
     }
 
-    public boolean IsDead(){
-        return health.IsDead();
+    // swap the position between this Unit and an enemy
+    protected void swapPosition(Enemy t) {
+        Position p = t.getPosition();
+        t.setPosition(this.getPosition());
+        this.setPosition(p);
     }
 
-    protected void SwapPosition(Empty t){
-        Position p = t.GetPosition();
-        t.SetPosition(this.GetPosition());
-        this.SetPosition(p);
-    }
+    // abstract method
+    public abstract Unit copy();
 
-    protected void SwapPosition(Enemy t){
-        Position p = t.GetPosition();
-        t.SetPosition(this.GetPosition());
-        this.SetPosition(p);
-    }
-
-    public abstract void ProcessStep();
-
-    public abstract Unit Copy();
-
+    // set the char of this Tile
     public void setTile(char tile) {
         this.tile = tile;
     }
 
-    public int[] Defence(int ar){
-        int [] combatInfo = new int[2];
-        combatInfo[0] = rnd.nextInt(GetDefence());
+    public int[] defence(int ar) {
+        int[] combatInfo = new int[2];
+        combatInfo[0] = rnd.nextInt(getDefence());
         combatInfo[1] = Math.max(ar - combatInfo[0], 0);
-        this.GetHealth().SetAmount(GetHealth().GetAmount() - combatInfo[1]);
+        this.getHealth().setAmount(getHealth().getAmount() - combatInfo[1]);
         return combatInfo;
     }
 
-    public abstract void Turn(int tickCount);
+    // abstract method of a turn
+    public abstract void turn(int tickCount);
 }

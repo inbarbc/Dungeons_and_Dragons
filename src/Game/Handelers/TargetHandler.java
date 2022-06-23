@@ -15,30 +15,20 @@ public class TargetHandler {
     public static Board gameBoard;
 
     // return all the enemies that are nearby the player
-    public static List<Enemy> CandidateTarget(Player player, Position position, int range) {
+    public static List<Enemy> candidateTarget(Player player, Position position, int range) {
         List<Enemy> closeEnemy = new ArrayList<>();
         for (Enemy enemy : gameBoard.enemies) {
-            if (position.IsInRange(enemy.GetPosition(), range))
+            if (position.isInRange(enemy.getPosition(), range))
                 closeEnemy.add(enemy);
         }
         return closeEnemy;
     }
 
     // save all the players that are nearby the enemy
-    public static List<Player> CandidateTarget(Enemy enemy, Position position, int range){
+    public static List<Player> candidateTarget(Enemy enemy, Position position, int range){
         List<Player> closePlayer=new ArrayList<>();
-        if( position.IsInRange(gameBoard.GetPlayer().GetPosition(),range))
-            closePlayer.add(gameBoard.GetPlayer());
+        if( position.isInRange(gameBoard.getPlayer().getPosition(),range))
+            closePlayer.add(gameBoard.getPlayer());
         return closePlayer;
     }
-
-    /*
-    public static List<Unit> CandidateTarget(Position cord, int range){
-        List<Unit> closeUnit=new ArrayList<>();
-        closeUnit.addAll(CandidateTarget(new Enemy(), cord, range));
-        closeUnit.addAll(CandidateTarget(new Player(),cord,range));
-        return closeUnit;
-    }
-     */
-
 }

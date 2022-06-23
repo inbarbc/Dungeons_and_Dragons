@@ -22,44 +22,38 @@ public abstract class Enemy extends Unit implements HeroicUnit, InputQuery {
 
     public MessageCallback messageCallback;
 
-    public Enemy(){}
-    public Enemy(String name, char tile, int hp, int ap, int dp, Position pos) {
-        super(tile, name, hp, ap, dp,pos);
+    public Enemy(String name, char tile, int health, int attack, int defense, Position position) {
+        super(tile, name, health, attack, defense,position);
     }
-    public Enemy(String name, char tile, int hp, int ap, int dp,int xp) {
-        this(name, tile, hp, ap, dp,xp,new Position());
+    public Enemy(String name, char tile, int health, int attack, int defense,int experience) {
+        this(name, tile, health, attack, defense,experience,new Position());
     }
-    public Enemy(String name, char tile, int hp, int ap, int dp,int xp,Position pos) {
-        super(tile, name, hp, ap, dp);
-        this.experienceValue=xp;
+    public Enemy(String name, char tile, int health, int attack, int defense,int experience,Position position) {
+        super(name, tile, health, attack, defense);
+        this.experienceValue=experience;
     }
 
-    public void Attack(Player defender) {
-        super.Attack(defender);
-        if (defender.IsDead()) {
-            messageCallback.Send(String.format("%s was killed by %d.", defender.GetName(), GetName()));
+    // the Enemy attack a Player on the board
+    public void attack(Player defender) {
+        super.attack(defender);
+        if (defender.isDead()) {
+            messageCallback.send(String.format("%s was killed by %d.", defender.getName(), getName()));
         }
     }
 
-    public int GetExprienceValue(){
+    // return the experience value
+    public int getExprienceValue(){
         return experienceValue;
     }
 
-    public void Move(InputProvider moveDir) {
-        MoveHandler.Move(moveDir, this);
+    // make a move for this enemy
+    public void move(InputProvider moveDir) {
+        MoveHandler.move(moveDir, this);
     }
 
-    public void Turn(int turnCount) {
-        InputProvider input = InputHandler.InputPlayerGame();
-        if (input == InputProvider.CastAbility)
-            this.TryCastAbility();
-        else
-            Move(input);
+    // the enemy make a turn
+    public void turn(int turnCount) {
     }
-
-    private void TryCastAbility() {
-    }
-
 
     public void SetMessageCallback(MessageCallback messageCallback) {
         this.messageCallback = messageCallback;
