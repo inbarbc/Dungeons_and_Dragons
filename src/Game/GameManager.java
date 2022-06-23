@@ -18,7 +18,7 @@ public class GameManager {
     Board board;
     List<Enemy> enemies;
     private int tickCount=0;
-    private  List<File> levelsFiles=new ArrayList<File>();
+    private List<File> levelsFiles=new ArrayList<File>();
     public List<Unit> listTurn=new ArrayList<Unit>();
 
 
