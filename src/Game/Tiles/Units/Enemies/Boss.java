@@ -11,100 +11,95 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Boss extends Enemy implements HeroicUnit {
+public class Boss extends Enemy {
 
     private final int visionRange;
     private final int abilityFrequency;
     private int combatTicks = 0;
     private final InputProvider[] rndArrs ={InputProvider.Wait,InputProvider.Right,InputProvider.Left,InputProvider.Up,InputProvider.Down};
 
-    public Boss(String name, char tile, int hp, int ap, int dp, int xp, int visionRange , int abilityFrequency) {
-        super(name, tile, hp, ap, dp, xp);
+    public Boss(String name, char tile, int health, int attack, int defence, int experience, int visionRange , int abilityFrequency) {
+        super(name, tile, health, attack, defence, experience);
         this.visionRange = visionRange;
         this.abilityFrequency = abilityFrequency;
     }
 
+    // a copy of the Boss
     @Override
-    public Unit Copy(){
-        return new Boss(this.GetName(), this.toString().charAt(0), this.GetHealth().GetAmount(), this.GetAttack(), this.GetDefence()
+    public Unit copy(){
+        return new Boss(this.getName(), this.toString().charAt(0), this.getHealth().getAmount(), this.getAttack(), this.getDefence()
                 ,this.experienceValue,this.visionRange, this.abilityFrequency);
     }
 
-    public void CastAbility(){
-
+    @Override
+    public void castAbility(){
     }
 
-    public void CastAbility(Player target) {
-        messageCallback.Send(String.format("%s cast special ability.",this.GetName()));
-        int[] combatInfo = target.Defence(this.GetAttack());
-        messageCallback.Send(String.format("%s rolled %d defence points.",target.GetName(), combatInfo[0]));
-        messageCallback.Send(String.format("%s hit %d for %d ability damage.",this.GetName(),target.GetName(), combatInfo[1]));
-        if(target.IsDead()){
-            messageCallback.Send(String.format("%s was killed by %d.",target.GetName(), this.GetName()));
+    // cast the ability for this Boss
+    public void castAbility(Player target) {
+        messageCallback.send(String.format("%s cast special ability.",this.getName()));
+        int[] combatInfo = target.defence(this.getAttack());
+        messageCallback.send(String.format("%s rolled %d defence points.",target.getName(), combatInfo[0]));
+        messageCallback.send(String.format("%s hit %d for %d ability damage.",this.getName(),target.getName(), combatInfo[1]));
+        if(target.isDead()){
+            messageCallback.send(String.format("%s was killed by %d.",target.getName(), this.getName()));
         }
     }
 
+    // this Boss makes a turn
     @Override
-    public void Turn(int turnCount) {
-        super.Turn(turnCount);
-        List<Player> closePlayer=new ArrayList<>();
-        closePlayer= TargetHandler.CandidateTarget(this, GetPosition(), visionRange);
+    public void turn(int turnCount) {
+        super.turn(turnCount);
+        List<Player> closePlayer;
+        closePlayer= TargetHandler.candidateTarget(this, getPosition(), visionRange);
         if(closePlayer.size()>0) {
             if (this.combatTicks == abilityFrequency) {
                 this.combatTicks = 0;
-                this.CastAbility(closePlayer.get(0));
+                this.castAbility(closePlayer.get(0));
             } else {
                 this.combatTicks += 1;
-                int dx = this.GetPosition().x - closePlayer.get(0).GetPosition().x;
-                int dy = this.GetPosition().y - closePlayer.get(0).GetPosition().y;
+                int dx = this.getPosition().x - closePlayer.get(0).getPosition().x;
+                int dy = this.getPosition().y - closePlayer.get(0).getPosition().y;
                 if (Math.abs(dx) > Math.abs(dy)) {
                     if (dx > 0)
-                        this.Move(InputProvider.Left);
+                        this.move(InputProvider.Left);
                     else
-                        this.Move(InputProvider.Right);
+                        this.move(InputProvider.Right);
                 } else {
                     if (dy > 0)
-                        this.Move(InputProvider.Up);
+                        this.move(InputProvider.Up);
                     else
-                        this.Move(InputProvider.Down);
+                        this.move(InputProvider.Down);
                 }
             }
         }
         else
         {
             this.combatTicks = 0;
-            this.Move(rndArrs[(new Random().nextInt(5))]) ;
+            this.move(rndArrs[(new Random().nextInt(5))]) ;
         }
     }
 
+    // this Boss description
     @Override
-    public String Describe(){return super.Describe()+"\t\tVision Range: "+this.visionRange +
+    public String describe(){return super.describe()+"\t\tVision Range: "+this.visionRange +
             "\t\tAbility load :"+ this.combatTicks +"/"+this.abilityFrequency;
     }
 
     @Override
-    public void Accept(Unit unit) {
-
+    public void accept(Unit unit) {
     }
 
     @Override
-    public void OnDeath() {
-
+    public void onDeath() {
     }
 
     @Override
-    public void Visit(Player p) {
-
+    public void visit(Player p) {
     }
 
     @Override
-    public void Visit(Enemy e) {
-
-    }
-
-    @Override
-    public void ProcessStep() {
-
+    public void visit(Enemy e) {
     }
 
     @Override

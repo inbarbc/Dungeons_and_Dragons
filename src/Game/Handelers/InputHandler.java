@@ -10,27 +10,28 @@ public class InputHandler {
     private static String userInputRegex = "[" + InputProvider.CastAbility.getRegex() + "]";
     private static String menuRegex = "[1-" + DatabaseUnits.playerPool.size() + "]";
 
-    public static InputProvider InputPlayerGame() {
-
-        return InputProvider.FindByKey(InputCache(userInputRegex) + "");
-
+    // get the player choice
+    public static InputProvider inputPlayerGame() {
+        return InputProvider.FindByKey(inputCache(userInputRegex) + "");
     }
 
-    public static char InputMenu() {
-        return InputCache(menuRegex);
+    // upload the options of the moves
+    public static char inputMenu() {
+        return inputCache(menuRegex);
     }
 
-    private static char InputCache(String regex) {
+    // return the char of the input for the move
+    private static char inputCache(String regex) {
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         String input = "";
         do {
             input = myObj.nextLine();
-        } while (!ValidateWithRegex(input, regex));
+        } while (!validateWithRegex(input, regex));
         return input.charAt(0);
     }
 
-
-    private static Boolean ValidateWithRegex(String s, String regex) {
+    // check if the move input is valid
+    private static Boolean validateWithRegex(String s, String regex) {
         if (s.length() == 1)
             if (s.matches(regex))
                 return true;

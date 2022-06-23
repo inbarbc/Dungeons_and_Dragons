@@ -22,59 +22,59 @@ public class GameManager {
     public List<Unit> listTurn=new ArrayList<Unit>();
 
 
-    // contracture
+    // contracture for game manager
     public GameManager(MessageCallback m){
         this.messageCallback = m;
-        DatabaseUnits.BuildDictionary();
+        DatabaseUnits.buildDictionary();
         TargetHandler.gameBoard=this.board;
         MoveHandler.gameBoard=this.board;
         Unit.gameManager=this;
     }
 
-    public void Start(String address) {
-        Instruction();
-        GetPlayerMenu();
-        CreateListOfLevel(address);
+    // start the game
+    public void start(String address) {
+        instruction();
+        getPlayerMenu();
+        createListOfLevel(address);
         for (File level : levelsFiles) {
-            Player player = board.GetPlayer();
-            if (player.IsDead())
+            Player player = board.getPlayer();
+            if (player.isDead())
                 break;
-            LoadGame(level);
-            StartLevel();
+            loadGame(level);
+            startLevel();
         }
-        if (board.GetPlayer().IsDead())
-            messageCallback.Send("Game Over.");
+        if (board.getPlayer().isDead())
+            messageCallback.send("Game Over.");
         else
-            messageCallback.Send("You Won.");
+            messageCallback.send("You Won.");
     }
 
-    public void LoadGame(File file){
-        board.BuildBoard(file);
+    // load the game to the screen
+    public void loadGame(File file){
+        board.buildBoard(file);
         listTurn.clear();
-        listTurn.add(board.GetPlayer());
+        listTurn.add(board.getPlayer());
 
         for(Unit enemy:board.enemies){
             listTurn.add(enemy);
         }
     }
 
-    public void OnTick(){
+    // if the unit is dead , remove it from the board
+    public void onTick(){
         ListIterator<Unit> iter = listTurn.listIterator();
-        while(iter.hasNext()&&!board.GetPlayer().IsDead()){
+        while(iter.hasNext()&&!board.getPlayer().isDead()){
             Unit unit= iter.next();
-            if(unit.IsDead()){
+            if(unit.isDead()){
                 iter.remove();
                 continue;
             }
-            unit.Turn(tickCount);
+            unit.turn(tickCount);
         }
     }
 
-    /**
-     * create list of files
-     * @param address the dir they are locate
-     */
-    public void CreateListOfLevel(String address){
+    // create list of files
+    public void createListOfLevel(String address){
         File f = new File(address);
         File[] matchingFiles = f.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -85,11 +85,12 @@ public class GameManager {
         levelsFiles.sort((File f1,File f2)->f1.getName().compareTo(f2.getName()));
     }
 
-    public void Instruction(){
-        messageCallback.Send("*!*!*!*!*!*!*!*!*! D&D-Roguelike !*!*!*!*!*!*!*!*!*");
-        messageCallback.Send("*** Game instructions:\n");
-        messageCallback.Send("* Game Controls:\n");
-        messageCallback.Send(
+    // print the instructions and game control
+    public void instruction(){
+        messageCallback.send("*!*!*!*!*!*!*!*!*! D&D-Roguelike !*!*!*!*!*!*!*!*!*");
+        messageCallback.send("*** Game instructions:\n");
+        messageCallback.send("* Game Controls:\n");
+        messageCallback.send(
                 "-Move up:\tW\n" +
                         "-Move down:\tS\n" +
                         "-Move right:\tD\n" +
@@ -97,12 +98,12 @@ public class GameManager {
                         "-Wait:\tQ\n" +
                         "-Attack: Steping on an enemy\n" +
                         "-Cast special Attack:\tE\n");
-        messageCallback.Send("* Map description:\n");
-        messageCallback.Send("-(.):\t Free space\n" +
+        messageCallback.send("* Map description:\n");
+        messageCallback.send("-(.):\t Free space\n" +
                 "-(#):\t Wall\n" +
                 "-(@):\t Your player\n");
-        messageCallback.Send("* Enemies list:\n");
-        messageCallback.Send("-(s):\t Lannister Solider\n" +
+        messageCallback.send("* Enemies list:\n");
+        messageCallback.send("-(s):\t Lannister Solider\n" +
                 "-(k):\t Lannister Knight\n" +
                 "-(q):\t Queen’s Guard\n" +
                 "-(z):\t Wright\n" +
@@ -119,19 +120,17 @@ public class GameManager {
                 "-(N):\t Night’s King\n");
     }
 
-    private void StartLevel() {
-        List<String> message=new ArrayList<String>();
-        List<String> msg=new ArrayList<String>();
+    // print the levels
+    private void startLevel() {
         tickCount=0;
-        while(!board.GetPlayer().IsDead()&&board.enemies.size()!=0)
+        while(!board.getPlayer().isDead()&&board.enemies.size()!=0)
         {
-            PrintLevel();
-            message.clear();
+            printLevel();
             tickCount+=1;
-            OnTick();
-        }if(board.GetPlayer().IsDead())
-            message.add("You Lost");
-        PrintLevel();
+            onTick();
+        }if(board.getPlayer().isDead())
+            messageCallback.send("You Lost");
+        printLevel();
     }
 
 
@@ -141,32 +140,31 @@ public class GameManager {
     //}
 
 
-    /**
-     * get the player choose
-     * @return the choosen player
-     */
-    private void GetPlayerMenu(){
-        PrintMenu();
-        char choose= InputHandler.InputMenu();
-        board.SetPlayer((Player) DatabaseUnits.playerPool.get(choose+"").Copy());
-        PrintChoosenPlayer();
-
+    // get the player choose
+    private void getPlayerMenu(){
+        printMenu();
+        char choose= InputHandler.inputMenu();
+        board.setPlayer((Player) DatabaseUnits.playerPool.get(choose+"").copy());
+        printChoosenPlayer();
     }
 
-    public void PrintLevel() {
+    // print the level of the game
+    public void printLevel() {
         if (board.enemies.size() > 0)
-            messageCallback.Send(board.ToString());
-            messageCallback.Send(board.GetPlayer().Describe());
+            messageCallback.send(board.toString());
+            messageCallback.send(board.getPlayer().describe());
     }
 
-    public void PrintMenu(){
-        messageCallback.Send("Select player:");
+    // print options of players
+    public void printMenu(){
+        messageCallback.send("Select player:");
         for(Map.Entry<String, Unit> player : DatabaseUnits.playerPool.entrySet())
-            messageCallback.Send(player.getValue().ToString()+"."+player.getValue().Describe());
+            messageCallback.send(player.getValue().toString()+"."+player.getValue().describe());
     }
 
-    public void PrintChoosenPlayer(){
-        Player player = board.GetPlayer();
-        messageCallback.Send(String.format("You have selected: %s", player.GetName()));
+    // print the choosen plater
+    public void printChoosenPlayer(){
+        Player player = board.getPlayer();
+        messageCallback.send(String.format("You have selected: %s", player.getName()));
     }
 }

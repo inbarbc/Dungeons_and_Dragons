@@ -16,65 +16,60 @@ public class Warrior extends Player {
 
 
     public Warrior(String name,char tile, int health, int attack, int defence, int cooldown) {
-        super(name, health, attack, defence);
+        super(name, tile, health, attack, defence);
         this.abilityCooldown = cooldown;
     }
 
+    // cast the ability for a Warrior
     @Override
     public void castAbility() {
-        List<Enemy> potenTarget = TargetHandler.CandidateTarget(this, this.GetPosition(), this.ABILITY_RANGE);
-        List<String> message = new ArrayList<String>();
-        int healBuff = 10 * GetDefence();
-        messageCallback.Send(String.format("%s cast %d, healing for %d.", this.GetName(), this.ABILITY_NAME, healBuff));
-        this.GetHealth().SetAmount(GetHealth().GetAmount() + healBuff);
+        List<Enemy> potenTarget = TargetHandler.candidateTarget(this, this.getPosition(), this.ABILITY_RANGE);
+        int healBuff = 10 * getDefence();
+        messageCallback.send(String.format("%s cast %s, healing for %d.", this.getName(), this.ABILITY_NAME, healBuff));
+        this.getHealth().setAmount(getHealth().getAmount() + healBuff);
         if (potenTarget.size() > 0) {
             int random = new Random().nextInt(potenTarget.size());
-            this.castAbility(potenTarget.get(random),(int) (this.GetHealth().GetAmount() * 0.1));
+            this.castAbility(potenTarget.get(random),(int) (this.getHealth().getAmount() * 0.1));
         }
         this.remainingCooldown = this.abilityCooldown + 1;
 
     }
 
+    // level up for this Warrior
     @Override
-    public void LevelUp() {
-        super.LevelUp();
+    public void levelUp() {
+        super.levelUp();
         remainingCooldown = 0;
-        this.GetHealth().SetPool(GetHealth().GetPool() + 5 * this.GetLevel());
-        this.attack = (this.GetAttackPoints() + this.GetLevel() * 2);
-        this.defense = (this.GetDefence() + GetLevel());
+        this.getHealth().setPool(getHealth().getPool() + 5 * this.getLevel());
+        this.attack = (this.getAttackPoints() + this.getLevel() * 2);
+        this.defense = (this.getDefence() + getLevel());
 
     }
 
+    // this Warrior makes a turn
     @Override
-    public void Turn(int turnCount) {
-        super.Turn(turnCount);
+    public void turn(int turnCount) {
+        super.turn(turnCount);
         remainingCooldown = Math.max(remainingCooldown - 1, 0);
 
     }
 
+    // the Warrior describe
     @Override
-    public String Describe() {
-        return super.Describe() + "\t\tCooldown: " + remainingCooldown + "/" + abilityCooldown;
+    public String describe() {
+        return super.describe() + "\t\tCooldown: " + remainingCooldown + "/" + abilityCooldown;
     }
 
-    @Override
-    public void ProcessStep() {
-
+    // a copy of the Warrior
+    public Warrior copy() {
+        return new Warrior(this.getName(), playerTile, this.getHealth().getAmount(), this.getAttackPoints(), this.getDefence(), this.abilityCooldown);
     }
 
-    public Warrior Copy() {
-        return new Warrior(this.GetName(), playerTile, this.GetHealth().GetAmount(), this.GetAttackPoints(), this.GetDefence(), this.abilityCooldown);
-    }
-
-    public void TryCastAbility() {
-        boolean cast = super.TryCastAbility(abilityCooldown - remainingCooldown, abilityCooldown);
+    // the Warrior try to cast his ability
+    public void tryCastAbility() {
+        boolean cast = super.tryCastAbility(abilityCooldown - remainingCooldown, abilityCooldown);
         if (!cast)
-            messageCallback.Send(String.format("%s tried to cast %s, but there is a cooldown :%t.",this.GetName(), this.ABILITY_NAME, remainingCooldown));
-    }
-
-    @Override
-    public void CastAbility() {
-
+            messageCallback.send(String.format("%s tried to cast %s, but there is a cooldown :%t.",this.getName(), this.ABILITY_NAME, remainingCooldown));
     }
 
     @Override

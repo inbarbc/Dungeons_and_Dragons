@@ -13,15 +13,18 @@ public class Empty{
         this.position = pos;
     }
 
-    public static char ToString() {
-        return tile;
+    // return the char that represents the Empty tile
+    public String toString() {
+        return tile + "";
     }
 
-    public Position GetPosition(){
+    // return the position of this tile
+    public Position getPosition(){
         return position;
     }
 
-    public void SetPosition(Position position){
+    // set the position of this tile
+    public void setPosition(Position position){
         this.position = position;
     }
 }

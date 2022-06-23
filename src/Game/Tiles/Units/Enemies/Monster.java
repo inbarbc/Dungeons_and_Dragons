@@ -11,75 +11,66 @@ import java.util.List;
 import java.util.Random;
 
 public class Monster extends Enemy {
+
     private int visionRange = 0;
     private InputProvider rndArrs[] = {InputProvider.Wait, InputProvider.Right, InputProvider.Left, InputProvider.Up, InputProvider.Down};
 
-    public Monster(String name, char tile, int hp, int ap, int dp, int xp, int visionRange) {
-        super(name, tile, hp, ap, dp, xp);
+    public Monster(String name, char tile, int health, int attack, int defence, int experience, int visionRange) {
+        super(name, tile, health, attack, defence, experience);
         this.visionRange = visionRange;
     }
 
-    public void Turn(int turnCount) {
-        super.Turn(turnCount);
+    // this Monster makes a turn
+    public void turn(int turnCount) {
+        super.turn(turnCount);
         List<Player> closePlayer = new ArrayList<>();
-        closePlayer = TargetHandler.CandidateTarget(this, this.GetPosition(), visionRange);
+        closePlayer = TargetHandler.candidateTarget(this, this.getPosition(), visionRange);
         if (closePlayer.size() > 0) {
-            int dx = this.GetPosition().x - closePlayer.get(0).GetPosition().x;
-            int dy = this.GetPosition().y - closePlayer.get(0).GetPosition().y;
+            int dx = this.getPosition().x - closePlayer.get(0).getPosition().x;
+            int dy = this.getPosition().y - closePlayer.get(0).getPosition().y;
             if (Math.abs(dx) > Math.abs(dy)) {
                 if (dx > 0)
-                    this.Move(InputProvider.Left);
+                    this.move(InputProvider.Left);
                 else
-                    this.Move(InputProvider.Right);
+                    this.move(InputProvider.Right);
             } else {
                 if (dy > 0)
-                    this.Move(InputProvider.Up);
+                    this.move(InputProvider.Up);
                 else
-                    this.Move(InputProvider.Down);
+                    this.move(InputProvider.Down);
             }
         } else {
-            this.Move(rndArrs[(new Random().nextInt(5))]);
+            this.move(rndArrs[(new Random().nextInt(5))]);
         }
     }
 
     @Override
-    public void OnDeath() {
-
+    public void onDeath() {
     }
 
     @Override
-    public void Visit(Player p) {
-
+    public void visit(Player p) {
     }
 
     @Override
-    public void Visit(Enemy e) {
-
+    public void visit(Enemy e) {
     }
 
-    @Override
-    public void ProcessStep() {
-
-    }
-
-    public Unit Copy() {
-        return new Monster(this.GetName(), this.toString().charAt(0), this.GetHealth().GetAmount(), this.GetAttackPoints(), this.GetDefence()
+    // a copy of the Monster
+    public Unit copy() {
+        return new Monster(this.getName(), this.toString().charAt(0), this.getHealth().getAmount(), this.getAttackPoints(), this.getDefence()
                 , this.experienceValue, this.visionRange);
     }
 
-    public String Description() {
-        return super.Describe() + "\t\tVision Range: " + this.visionRange;
+    // the describe of this Monster
+    public String describe() {
+        return super.describe() + "\t\tVision Range: " + this.visionRange;
     }
+    @Override
+    public void castAbility() {}
 
     @Override
-    public void CastAbility() {
-
-    }
-
-    @Override
-    public void Accept(Unit unit) {
-
-    }
+    public void accept(Unit unit) {}
 
     @Override
     public char GetInput() {

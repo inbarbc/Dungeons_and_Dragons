@@ -25,149 +25,166 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
     protected MessageCallback messageCallback;
     protected InputProvider inputProvider;
 
-    public Player(){}
-
     public Player(String name, char tile, int health, int attack, int defence) {
         super(name, tile, health, attack, defence);
     }
 
     protected Player(String name, int healthCapacity, int attack, int defense) {
-        super(playerTile, name, healthCapacity, attack, defense);
+        super(name, playerTile, healthCapacity, attack, defense);
         this.level = 1;
         this.experience = 0;
     }
 
-    public Player Initialize(Position position, MessageCallback messageCallback, InputProvider inputPruvider) {
-        super.Initialize(position, messageCallback);
+    // initialize the position and messageCallback and inputPruvider for this player
+    public Player initialize(Position position, MessageCallback messageCallback, InputProvider inputPruvider) {
+        super.initialize(position, messageCallback);
         this.messageCallback = messageCallback;
         this.inputProvider = inputPruvider;
         return this;
     }
 
-    public void Accept(Unit u) {
-        u.Visit(this);
+    // visitor pattern
+    public void accept(Unit u) {
+        u.visit(this);
     }
 
-    public void Visit(Enemy e) {
-        super.Combat(e);
-        if (e.IsDead()) {
-            SwapPosition(e);
-            OnKill(e);
+    // if the player visit an Enemy, it makes a combat
+    public void visit(Enemy e) {
+        super.combat(e);
+        if (e.isDead()) {
+            swapPosition(e);
+            onKill(e);
         }
     }
 
-    protected void AbilityDamage(Enemy e, int abilityDamage) {
-        int damageDone = Math.max(abilityDamage - e.GetDefence(), 0);
-        e.GetHealth().ReduceAmount(damageDone);
-        messageCallback.Send(String.format("%s hit %s for %d ability damage.", GetName(), e.GetName(), damageDone));
-        if (e.IsDead()) {
-            OnKill(e);
+    // the damage the ability has done
+    protected void abilityDamage(Enemy e, int abilityDamage) {
+        int damageDone = Math.max(abilityDamage - e.getDefence(), 0);
+        e.getHealth().reduceAmount(damageDone);
+        messageCallback.send(String.format("%s hit %s for %d ability damage.", getName(), e.getName(), damageDone));
+        if (e.isDead()) {
+            onKill(e);
         }
     }
 
-    protected void OnKill(Enemy e) {
-        int experienceGained = e.GetExprienceValue();
-        messageCallback.Send(String.format("%s died. %s gained %d experience.", e.GetName(), GetName(), experienceGained));
-        AddExperience(experienceGained);
-        e.OnDeath();
+    // a player kills an enemy
+    protected void onKill(Enemy e) {
+        int experienceGained = e.getExprienceValue();
+        messageCallback.send(String.format("%s died. %s gained %d experience.", e.getName(), getName(), experienceGained));
+        addExperience(experienceGained);
+        e.onDeath();
     }
 
-    public void OnDeath() {
-        messageCallback.Send("You lost.");
+    // the player is dead
+    public void onDeath() {
+        messageCallback.send("You lost.");
     }
 
-    protected void AddExperience(int experienceGained) {
+    // add experience when level up
+    protected void addExperience(int experienceGained) {
         this.experience += experienceGained;
-        int nextLevelReq = LevelUpRequirement();
+        int nextLevelReq = levelUpRequirement();
         while (experienceGained >= nextLevelReq) {
-            LevelUp();
+            levelUp();
             experience -= nextLevelReq;
-            nextLevelReq = LevelUpRequirement();
+            nextLevelReq = levelUpRequirement();
         }
     }
 
-    protected void LevelUp() {
+    // level up for this player
+    protected void levelUp() {
         level++;
-        int healthGained = GainHealth();
-        int attackGained = GainAttack();
-        int defenseGained = GainDefense();
-        health.AddCapacity(healthGained);
-        health.Restore();
+        int healthGained = gainHealth();
+        int attackGained = gainAttack();
+        int defenseGained = gainDefense();
+        health.addCapacity(healthGained);
         attack += attackGained;
         defense += defenseGained;
-        messageCallback.Send(String.format("%s reached level %d: +%d Health, +%d Attack, +%d Defense.", GetName(), GetLevel(), healthGained, attackGained));
+        messageCallback.send(String.format("%s reached level %d: +%d Health, +%d Attack, +%d Defense.", getName(), getLevel(), healthGained, attackGained));
     }
 
-    public String ToString() {
-        return !IsDead() ? super.ToString() : "x";
+    public String toString() {
+        return !isDead() ? super.toString() : "x";
     }
 
-    protected int GainHealth() {
+    // when leveling up, returns the new amount of HEALTH
+    protected int gainHealth() {
         return level * HEALTH_BONUS;
     }
 
-    protected int GainAttack() {
+    // when leveling up, returns the new amount of ATTACK
+    protected int gainAttack() {
         return level * ATTACK_BONUS;
     }
 
-    protected int GainDefense() {
+    // when leveling up, returns the new amount of DEFENSE
+    protected int gainDefense() {
         return level * DEFENSE_BONUS;
     }
 
-    protected int LevelUpRequirement() {
+    // return the requirement amount to level up
+    protected int levelUpRequirement() {
         return REQ_EXP * DEFENSE_BONUS;
     }
 
-    public int GetLevel(){
+    // return the level of the player
+    public int getLevel(){
         return level;
     }
 
-    public InputProvider GetInputProvider() {
+    public InputProvider getInputProvider() {
         return inputProvider;
     }
 
-    public int GetExprienceValue() {
+    // return the experience of the player
+    public int getExprienceValue() {
         return experience;
     }
 
-    public void Visit(Player p){}
+    // when a player meet a player on the board
+    public void visit(Player p){}
 
-    public String Describe() {
-        return String.format("%s\t\tLevel: %d\t\tExperience: %d/%d", super.Describe(), GetLevel(), GetExprienceValue(), LevelUpRequirement());
+    // return a string that describe the player
+    public String describe() {
+        return String.format("%s\t\tLevel: %d\t\tExperience: %d/%d", super.describe(), getLevel(), getExprienceValue(), levelUpRequirement());
     }
 
-    public Boolean TryCastAbility(int resource, int cost) {
+    // the player try to cast his ability
+    public Boolean tryCastAbility(int resource, int cost) {
         if (resource - cost >= 0) {
-            CastAbility();
+            castAbility();
             return true;
         }
         return false;
     }
 
-    public  void castAbility(){}
+    public abstract void castAbility();
 
-    public void castAbility(Enemy defender,int ap){
-        int [] combatInfo = defender.Defence(ap);
-        messageCallback.Send(String.format("%s rolled %d: %d defence points.", defender.GetName(), combatInfo[0]));
-        messageCallback.Send(String.format("%s hit %d: %d for %d ability damage.", GetName(), defender.GetName(), combatInfo[1]));
-        if(defender.IsDead()) {
-            messageCallback.Send(String.format("%s died. %d gained %d experience.", defender.GetName(), this.GetName(), defender.experienceValue));
+    // cast the ability of the player, and send a message callback
+    public void castAbility(Enemy defender,int attackPoints){
+        int [] combatInfo = defender.defence(attackPoints);
+        messageCallback.send(String.format("%s rolled %d: %d defence points.", defender.getName(), combatInfo[0]));
+        messageCallback.send(String.format("%s hit %d: %d for %d ability damage.", getName(), defender.getName(), combatInfo[1]));
+        if(defender.isDead()) {
+            messageCallback.send(String.format("%s died. %d gained %d experience.", defender.getName(), this.getName(), defender.experienceValue));
             experience = (experience+ defender.experienceValue);
         }
     }
 
-    public void Turn(int turnCount) {
-        InputProvider input = InputHandler.InputPlayerGame();
+    // the turn of the player
+    public void turn(int turnCount) {
+        InputProvider input = InputHandler.inputPlayerGame();
         if (input == InputProvider.CastAbility)
-            this.TryCastAbility();
+            this.tryCastAbility();
         else
-            Move(input);
+            move(input);
     }
 
-    private void TryCastAbility() {
-    }
+    // abstract method
+    public abstract void tryCastAbility();
 
-    public void Move(InputProvider moveDir) {
-        MoveHandler.Move(moveDir, this);
+    // make a move for the player
+    public void move(InputProvider moveDir) {
+        MoveHandler.move(moveDir, this);
     }
 }

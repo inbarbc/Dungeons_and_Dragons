@@ -20,21 +20,22 @@ import java.util.stream.Collectors;
 
 public class DatabaseUnits {
 
-
     public static Map<String, Unit> playerPool = new HashMap<String, Unit>();
     public static Map<String, Unit> enemyPool = new HashMap<String, Unit>();
     private final static String dirAddons = "src/addons";
 
     public DatabaseUnits() {
-        BuildDictionary();
+        buildDictionary();
     }
 
-    public static void BuildDictionary() {
-        BuildUnit("/addons/dbPlayer", playerPool); // players list
-        BuildUnit("/addons/dbEnemy", enemyPool); // enemies list
+    // connect the databases to the game
+    public static void buildDictionary() {
+        buildUnit("/addons/dbPlayer", playerPool); // players list
+        buildUnit("/addons/dbEnemy", enemyPool); // enemies list
     }
 
-    public static String GetFileJar(String address) {
+    // return the files from Jar to string format
+    public static String getFileJar(String address) {
         String fileText = "";
         InputStream in = DatabaseUnits.class.getResourceAsStream(address);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -43,21 +44,21 @@ public class DatabaseUnits {
     }
 
     // transfer the table to presentation view
-    private static void BuildUnit(String address, Map<String, Unit> map) {
-        String txtToSplit = GetFileJar(address);
+    private static void buildUnit(String address, Map<String, Unit> map) {
+        String txtToSplit = getFileJar(address);
         ArrayList<String> enemyUnit = new ArrayList<String>(Arrays.asList(txtToSplit.split("\n")));
         for (String unitStr : enemyUnit) {
             ArrayList<String> argumentUnit = new ArrayList<String>(Arrays.asList(unitStr.split("\\|")));
-            Unit unitObj = FacrotyUnit(argumentUnit);
+            Unit unitObj = facrotyUnit(argumentUnit);
+            assert unitObj != null;
             map.put(unitObj.toString(), unitObj);
         }
 
     }
 
-    private static Unit FacrotyUnit(ArrayList<String> typeUnit) {
-
+    // make the Units with the data from the databases of the Units in the game
+    private static Unit facrotyUnit(ArrayList<String> typeUnit) {
         String type = typeUnit.get(0);
-
         String name = typeUnit.get(1);
         char tile = typeUnit.get(2).charAt(0);
         int health = Integer.parseInt(typeUnit.get(3));
@@ -101,7 +102,6 @@ public class DatabaseUnits {
             int abilityFrequency = Integer.parseInt(typeUnit.get(8));
             return new Boss(name, tile, health, attack, defence, expirenceValue, visionRange, abilityFrequency);
         }
-
         return null;
     }
 }

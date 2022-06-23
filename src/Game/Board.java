@@ -21,20 +21,24 @@ public class Board {
     public HashMap<Position, Wall> walls = new HashMap<Position, Wall>();
     private String[][]board;
 
-    public Player GetPlayer() {
+    // return the player
+    public Player getPlayer() {
         return player;
     }
 
-    public void SetPlayer(Player player) {
+    // set the player in the game board
+    public void setPlayer(Player player) {
         this.player = player;
     }
 
-    public void BuildBoard(File mapFile, Player player){
+    // build the board this the map file of the game board
+    public void buildBoard(File mapFile, Player player){
         this.player=player;
-        BuildBoard(mapFile);
+        buildBoard(mapFile);
     }
 
-    public void BuildBoard(File mapFile) {
+    // build the game board
+    public void buildBoard(File mapFile) {
         walls.clear();
         try {
             Scanner mapReader = new Scanner(mapFile);
@@ -48,14 +52,14 @@ public class Board {
                 x = 0;
                 for (char ch: data.toCharArray()){
                     if (ch == '@') {
-                        player.SetPosition(position);
+                        player.setPosition(position);
                     }
                     if (ch == '#') {
                         walls.put(position, new Wall(position));
                     }
                     if (DatabaseUnits.enemyPool.containsKey(ch+"")){
-                        enemy = DatabaseUnits.enemyPool.get(ch+"").Copy();
-                        enemy.SetPosition(position);
+                        enemy = DatabaseUnits.enemyPool.get(ch+"").copy();
+                        enemy.setPosition(position);
                         enemies.add((Enemy) enemy);
                     }
                     x++;
@@ -69,35 +73,35 @@ public class Board {
         catch (Exception e){}
     }
 
-    public void BuildArray(){
+    // build the board in arrays
+    public void buildArray(){
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
                 board[y][x] = ".";
-        board[player.GetPosition().y][player.GetPosition().x] =player.toString();
+        board[player.getPosition().y][player.getPosition().x] =player.toString();
         for (Unit enemy : this.enemies){
-            board[enemy.GetPosition().y][enemy.GetPosition().x] = enemy.toString();
+            board[enemy.getPosition().y][enemy.getPosition().x] = enemy.toString();
         }
         for (Position wallPos: this.walls.keySet()){
             board[wallPos.y][wallPos.x] = this.walls.get(wallPos).toString();
         }
     }
 
-    public String ArrayToString(){
-        String currBoard = "";
+    // convert the array to a string
+    public String arrayToString(){
+        StringBuilder currBoard = new StringBuilder();
         for (String[] line : board) {
             for (String block : line) {
-                currBoard += block;
+                currBoard.append(block);
             }
-            currBoard += "\n";
+            currBoard.append("\n");
         }
-        return currBoard;
+        return currBoard.toString();
     }
 
-    public String ToString(){
-        BuildArray();
-        return ArrayToString();
-    }
-
-    public void Remove(Enemy e) {
+    // return the board in a string format
+    public String toString(){
+        buildArray();
+        return arrayToString();
     }
 }
