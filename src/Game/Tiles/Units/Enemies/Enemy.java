@@ -8,9 +8,8 @@ import Game.Tiles.Units.Player.Player;
 import Game.Tiles.Units.Unit;
 import Game.Utils.Position;
 import View.Input.InputProvider;
-import View.Input.InputQuery;
 
-public abstract class Enemy extends Unit implements HeroicUnit, InputQuery {
+public abstract class Enemy extends Unit implements HeroicUnit {
 
     public int experienceValue = 0;
 
@@ -22,9 +21,6 @@ public abstract class Enemy extends Unit implements HeroicUnit, InputQuery {
 
     public MessageCallback messageCallback;
 
-    public Enemy(String name, char tile, int health, int attack, int defense, Position position) {
-        super(tile, name, health, attack, defense,position);
-    }
     public Enemy(String name, char tile, int health, int attack, int defense,int experience) {
         this(name, tile, health, attack, defense,experience,new Position());
     }
@@ -53,9 +49,5 @@ public abstract class Enemy extends Unit implements HeroicUnit, InputQuery {
 
     // the enemy make a turn
     public void turn(int turnCount) {
-    }
-
-    public void SetMessageCallback(MessageCallback messageCallback) {
-        this.messageCallback = messageCallback;
     }
 }

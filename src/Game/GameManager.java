@@ -29,6 +29,7 @@ public class GameManager {
         TargetHandler.gameBoard=this.board;
         MoveHandler.gameBoard=this.board;
         Unit.gameManager=this;
+        Unit.setMessageCallback(m);
     }
 
     // start the game
@@ -38,6 +39,7 @@ public class GameManager {
         createListOfLevel(address);
         for (File level : levelsFiles) {
             Player player = board.getPlayer();
+            player.initialize(player.getPosition(), messageCallback);
             if (player.isDead())
                 break;
             loadGame(level);

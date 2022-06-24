@@ -78,11 +78,6 @@ public class Trap extends Enemy {
     public void accept(Unit unit) {}
 
     @Override
-    public char GetInput() {
-        return 0;
-    }
-
-    @Override
     public int compareTo(Tile o) {
         return 0;
     }

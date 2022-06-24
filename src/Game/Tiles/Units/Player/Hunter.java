@@ -83,11 +83,6 @@ public class Hunter extends Player {
     }
 
     @Override
-    public char GetInput() {
-        return 0;
-    }
-
-    @Override
     public int compareTo(Tile o) {
         return 0;
     }

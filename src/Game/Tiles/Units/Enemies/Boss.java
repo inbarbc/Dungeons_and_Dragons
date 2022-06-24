@@ -96,15 +96,11 @@ public class Boss extends Enemy {
 
     @Override
     public void visit(Player p) {
+        combat(p);
     }
 
     @Override
     public void visit(Enemy e) {
-    }
-
-    @Override
-    public char GetInput() {
-        return 0;
     }
 
     @Override

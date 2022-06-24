@@ -12,7 +12,7 @@ public abstract class Unit extends Tile {
 
     private char tile;
     protected static Random rnd = new Random(123);
-    protected MessageCallback messageCallback;
+    public static MessageCallback messageCallback;
     protected String name;
     protected Health health;
     protected int attack;
@@ -148,4 +148,9 @@ public abstract class Unit extends Tile {
 
     // abstract method of a turn
     public abstract void turn(int tickCount);
+
+
+    public static void setMessageCallback(MessageCallback m){
+        messageCallback = m;
+    }
 }

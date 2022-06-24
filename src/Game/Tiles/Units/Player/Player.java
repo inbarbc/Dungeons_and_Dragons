@@ -8,9 +8,8 @@ import Game.Handelers.InputHandler;
 import View.Input.InputProvider;
 import Game.Tiles.Units.Enemies.Enemy;
 import Game.Utils.Position;
-import View.Input.InputQuery;
 
-public abstract class Player extends Unit implements HeroicUnit, InputQuery {
+public abstract class Player extends Unit implements HeroicUnit {
 
     public static final char playerTile = '@';
     protected static final int REQ_EXP = 50;
@@ -23,7 +22,6 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
     protected int experience;
 
     protected MessageCallback messageCallback;
-    protected InputProvider inputProvider;
 
     public Player(String name, char tile, int health, int attack, int defence) {
         super(name, tile, health, attack, defence);
@@ -36,11 +34,9 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
     }
 
     // initialize the position and messageCallback and inputPruvider for this player
-    public Player initialize(Position position, MessageCallback messageCallback, InputProvider inputPruvider) {
+    public void initialize(Position position, MessageCallback messageCallback) {
         super.initialize(position, messageCallback);
         this.messageCallback = messageCallback;
-        this.inputProvider = inputPruvider;
-        return this;
     }
 
     // visitor pattern
@@ -130,10 +126,6 @@ public abstract class Player extends Unit implements HeroicUnit, InputQuery {
     // return the level of the player
     public int getLevel(){
         return level;
-    }
-
-    public InputProvider getInputProvider() {
-        return inputProvider;
     }
 
     // return the experience of the player
