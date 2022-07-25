@@ -87,10 +87,6 @@ public class Boss extends Enemy {
     }
 
     @Override
-    public void accept(Unit unit) {
-    }
-
-    @Override
     public void onDeath() {
     }
 

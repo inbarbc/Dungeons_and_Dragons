@@ -70,9 +70,6 @@ public class Monster extends Enemy {
     public void castAbility() {}
 
     @Override
-    public void accept(Unit unit) {}
-
-    @Override
     public int compareTo(Tile o) {
         return 0;
     }

@@ -39,11 +39,6 @@ public abstract class Player extends Unit implements HeroicUnit {
         this.messageCallback = messageCallback;
     }
 
-    // visitor pattern
-    public void accept(Unit u) {
-        u.visit(this);
-    }
-
     // if the player visit an Enemy, it makes a combat
     public void visit(Enemy e) {
         super.combat(e);
